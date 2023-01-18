@@ -1,0 +1,35 @@
+name: Build with Actions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+  
+    - name: Set up WinLibs
+      uses: bwoodsend/setup-winlibs-action@v1.8
+      with:
+        tag: latest
+        add_to_path: true
+        architecture: 64
+  
+    - name: Set up GStreamer
+      run: | 
+        Invoke-WebRequest https://gstreamer.freedesktop.org/pkg/windows/1.20.5/mingw/gstreamer-1.0-mingw-x86_64-1.20.5.msi -UseBasicParsing -OutFile gst.msi
+        Invoke-WebRequest https://gstreamer.freedesktop.org/pkg/windows/1.20.5/mingw/gstreamer-1.0-devel-mingw-x86_64-1.20.5.msi -UseBasicParsing -OutFile gstdev.msi
+        Start-Process msiexec.exe -Wait -ArgumentList '/I gst.msi TARGETDIR="C:\" /qb /quiet'
+        Start-Process msiexec.exe -Wait -ArgumentList '/I gstdev.msi TARGETDIR="C:\" /qb /quiet'
+  
+    - name: Build
+      run: |
+        go build .
+      env:
+        PKG_CONFIG_PATH: 'C:\gstreamer\1.0\mingw_x86_64\lib\pkgconfig'
