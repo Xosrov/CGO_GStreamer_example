@@ -6,30 +6,18 @@ on:
 jobs:
   build-release:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
     steps:
-    - uses: actions/checkout@v3
-  
-    - name: Set up msys2
-      uses: msys2/setup-msys2@v2
-      with:
-        msystem: MINGW64
-        location: C:\
-        update: true
-        release: false
-        install: >-
-          git
-          base-devel
-        pacboy: >-
-          go:p
-  
-    - name: Set up GStreamer
-      run: | 
-        Invoke-WebRequest https://gstreamer.freedesktop.org/pkg/windows/1.20.5/mingw/gstreamer-1.0-mingw-x86_64-1.20.5.msi -UseBasicParsing -OutFile gst.msi
-        Invoke-WebRequest https://gstreamer.freedesktop.org/pkg/windows/1.20.5/mingw/gstreamer-1.0-devel-mingw-x86_64-1.20.5.msi -UseBasicParsing -OutFile gstdev.msi
-        Start-Process msiexec.exe -Wait -ArgumentList '/I gst.msi TARGETDIR="C:\" /qb /quiet'
-        Start-Process msiexec.exe -Wait -ArgumentList '/I gstdev.msi TARGETDIR="C:\" /qb /quiet'
-  
-    - name: Build
-      shell: msys2 {0}
-      run: |
-        PKG_CONFIG_PATH=/c/gstreamer/1.0/mingw_x86_64/lib/pkgconfig go build .
+      - uses: actions/checkout@v3
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: git base-devel
+          pacboy: >-
+            go:p gstreamer:p gst-plugins-base:p gst-plugins-good:p gst-plugins-bad:p gst-plugins-ugly:p gst-libav:p gst-devtools:p gst-rtsp-server:p
+      - name: CI-Build
+        run: |
+          go build .
