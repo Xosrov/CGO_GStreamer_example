@@ -23,8 +23,8 @@ jobs:
   
     - name: Set up GStreamer
       run: | 
-        Invoke-WebRequest https://gstreamer.freedesktop.org/pkg/windows/1.20.5/mingw/gstreamer-1.0-mingw-x86_64-1.20.5.msi -UseBasicParsing -OutFile gst.msi
-        Invoke-WebRequest https://gstreamer.freedesktop.org/pkg/windows/1.20.5/mingw/gstreamer-1.0-devel-mingw-x86_64-1.20.5.msi -UseBasicParsing -OutFile gstdev.msi
+        Invoke-WebRequest https://gstreamer.freedesktop.org/data/pkg/windows/1.22.0/mingw/gstreamer-1.0-mingw-x86_64-1.22.0.msi -UseBasicParsing -OutFile gst.msi
+        Invoke-WebRequest https://gstreamer.freedesktop.org/data/pkg/windows/1.22.0/mingw/gstreamer-1.0-devel-mingw-x86_64-1.22.0.msi -UseBasicParsing -OutFile gstdev.msi
         Start-Process msiexec.exe -Wait -ArgumentList '/I gst.msi TARGETDIR="C:\" /qb /quiet'
         Start-Process msiexec.exe -Wait -ArgumentList '/I gstdev.msi TARGETDIR="C:\" /qb /quiet'
   
