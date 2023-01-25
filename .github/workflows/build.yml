@@ -15,6 +15,7 @@ jobs:
         msystem: MINGW64
         location: C:\
         update: true
+        release: false
         install: >-
           git
           base-devel
