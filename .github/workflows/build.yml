@@ -15,9 +15,9 @@ jobs:
         with:
           msystem: MINGW64
           update: true
-          install: git base-devel
+          install: git
           pacboy: >-
-            go:p gstreamer:p gst-plugins-base:p gst-plugins-good:p gst-plugins-bad:p gst-plugins-ugly:p gst-libav:p gst-devtools:p gst-rtsp-server:p
+            go:p gcc:p pkg-config:p gstreamer:p gst-plugins-base:p gst-plugins-good:p gst-plugins-bad:p gst-plugins-ugly:p
       - name: CI-Build
         run: |
           go build .
