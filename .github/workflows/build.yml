@@ -8,18 +8,18 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.19
   
-    - name: Set up WinLibs
-      uses: bwoodsend/setup-winlibs-action@v1.8
+    - name: Set up msys2
+      uses: msys2/setup-msys2@v2
       with:
-        tag: latest
-        add_to_path: true
-        architecture: 64
+        msystem: MINGW64
+        location: C:\
+        update: true
+        install: >-
+          git
+          base-devel
+        pacboy: >-
+          go:p
   
     - name: Set up GStreamer
       run: | 
@@ -29,7 +29,6 @@ jobs:
         Start-Process msiexec.exe -Wait -ArgumentList '/I gstdev.msi TARGETDIR="C:\" /qb /quiet'
   
     - name: Build
+      shell: msys2 {0}
       run: |
-        go build .
-      env:
-        PKG_CONFIG_PATH: 'C:\gstreamer\1.0\mingw_x86_64\lib\pkgconfig'
+        PKG_CONFIG_PATH=/c/gstreamer/1.0/mingw_x86_64/lib/pkgconfig go build .
